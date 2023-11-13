@@ -48,8 +48,8 @@ Nf_qq = 18
 #gr0 = 0.01             #right coupling constant with SM, according to CMS parameters
 #gl0 = 0.01             ## vetorial: gl = gr  ## axial: gl = -gr ## chiral: gl = 0
 
-gr0 = 0.01             #right coupling constant with SM, according to CMS parameters
-gl0 = 0.01             ## vetorial: gl = gr  ## axial: gl = -gr ## chiral: gl = 0
+gr0_e = 0.01             #right coupling constant with SM, according to CMS parameters
+gl0_e = 0.01             ## vetorial: gl = gr  ## axial: gl = -gr ## chiral: gl = 0
 
 gr0_q = 0.1             #right coupling constant with SM, according to CMS parameters
 gl0_q = 0.1             ## vetorial: gl = gr  ## axial: gl = -gr ## chiral: gl = 0
@@ -59,6 +59,9 @@ grx0 = gxs0 = gxv0 = gx0  # specific SFV dark couplings
 glx0 = 1.
 
 
+## Labels 
+ee_qq = {'ee': r"""$e^{+}e^{-} \to Z^{\prime} \to \chi \chi$""", 'qq': r"""$q \bar q \to Z^{\prime} \to \chi \chi$""" }
+cps = ['V', 'AV', 'CHR']
 ### Auxiliar functions 
 import pickle
 

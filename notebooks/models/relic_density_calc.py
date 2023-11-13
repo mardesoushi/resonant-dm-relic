@@ -85,12 +85,12 @@ def sigmav_res(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Nf):
     spin_s = 1 ## Spin of mediator / ressonance
     W = (2*spin_j + 1)/((2*spin_s  + 1)**2)
 
-    TotalDecay = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) + sig0.GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
+    TotalDecay = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf) + sig0.GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
 
     epsR = ((Mmed**2) - (4*mx**2))/(4*mx**2)
     gamma_r = (Mmed * TotalDecay) / (4*mx**2)
 
-    Bi = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) / (TotalDecay)
+    Bi = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf) / (TotalDecay)
     #br = GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) * (1 - GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) )
     Br = Bi * (1 - Bi)
 
@@ -120,13 +120,13 @@ def sigmav_res(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Nf):
     return result
 
 @np.vectorize
-def Ohm_numerical(s, mq, Mmed, mx, gr, gl, gx, dmname, Nf= 6):
+def Ohm_numerical(s, mq, Mmed, mx, gr, gl, gx, dmname, Nf):
     if mx > Mmed/2:
         return np.nan
     else:
         
         def i_argument(x):
-            result = sigmav_res(x, s, mq, Mmed, mx, gr, gl, gx, dmname, Nf = 6)
+            result = sigmav_res(x, s, mq, Mmed, mx, gr, gl, gx, dmname, Nf)
             return result
         
 
@@ -138,7 +138,7 @@ def Ohm_numerical(s, mq, Mmed, mx, gr, gl, gx, dmname, Nf= 6):
 
 
 @np.vectorize
-def sigmav_gondolo(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Bi, l):
+def sigmav_gondolo(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Bi, l, Nf):
     x = mx/T
     # spin configuration
     dict_spin = {'Scalar':0, 'Fermion': 1/2, 'Vector':1}
@@ -147,7 +147,7 @@ def sigmav_gondolo(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Bi, l):
     spin_s = 1 ## Spin of mediator / ressonance
     W = (2*spin_j + 1)/((2*spin_s  + 1)**2)
 
-    TotalDecay = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) + sig0.GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx)
+    TotalDecay = sig0.GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf) + sig0.GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
     
     
     #Td = 0.02 * Mmed
@@ -205,161 +205,3 @@ def sigmav_gondolo(T, s, mq, Mmed, mx, gr, gl, gx, dmname, Bi, l):
     result = prefact3  * Flzrx(T, l)
     
     return result
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### not used ###
-
-# def oldOHM_relic(sigma, mx, n):    ## cálculo da relic density em cada ponto 
-#     xfo = np.log(0.038*(n+1)*(gf/(gst**(1/2)))*Mplanck*mx*sigma) - (n+0.5)*np.log(np.log(0.038*(n+1)*(gf/(gst**(0.5)))*Mplanck*mx*sigma))
-#     OHM_dm = ((mx*s0)/rho) * ( 3.79*(n+1)*(xfo**(n+1)) ) / ((gst/gst**(1/2))*Mplanck*mx*sigma)
-#     OHM_dm = OHM_dm*(h**2)
-#     return OHM_dm
-# ##!! WARNING: sigma must be in TeV^-2 units, not barn ##
-# ################################################################################
-################################################################################
-
-
-# @np.vectorize
-# def sigmav_x(sig0, x, xg, s, mq, Mmed, mx, gr, gl, gx):
-
-    
-#     def int0(s, mq, Mmed, mx, gr, gl, gx):
-#         prefac = (2*np.pi**2 * (mx/x)) / ( (4 * np.pi * mx**2 * (mx/x) * (sp.kn(2, x))) **2 )
-    
-#         newprefac = (1 / (8 * (mx**4) * (mx/x) * ((sp.kn(2, x))** 2) )) 
-    
-#         return newprefac * (sig0(xg, s, mq, Mmed, mx, gr, gl, gx) * np.sqrt(s)* (s - 4*mx**2) * sp.kn(1, np.sqrt(s)*(x/mx)))
-
-    
-#     factcmframe = ( (1/2)*(1 + ( (sp.kn(1, x)**2)/(sp.kn (2,  x)**2) )) ) 
-
-#     ## Integrates int0 over s (first variable), from 4mx² to inf 
-#     ## sigmav0 =  intsimp(int0, 4*mx**2, inff, Npoints, mq, Mmed, mx, gr, gl, gx)
-#     sigmav0 =  quad(int0, 4*mx**2, np.inf, args=(mq, Mmed, mx, gr, gl, gx), limit=intlimit, epsabs=erroabs, epsrel=errorel)[0]
-
-#     return factcmframe * sigmav0
-    
-
-
-# @np.vectorize
-# def Za1(x, sig0, xg, s, mq, Mmed, mx, gr, gl, gx):
-#     result = np.sqrt((np.pi/45)*gst) * (mx/x**2) * Mplanck * sigmav_x(sig0, x, xg, s, mq, Mmed, mx, gr, gl, gx)
-#     if np.isnan(result):
-#         return 0
-#     else:
-#         return result
-
-
-# # ## Functions to calculate xf analytically
-# # @np.vectorize
-# # def Yeq(x):
-# #     return (45/4*np.pi**4) *  ((x**2 *sp.kn(2, x)) / heff)
-
-# # @np.vectorize
-# # def Yhat(x):
-# #     return np.exp(x)*Yeq(x)
-
-# # @np.vectorize
-# # def Yeq_prime(x): # From mathematica
-# #     cte = (45/4*np.pi**4)/heff
-# #     result = np.exp(x) * cte * (x**2) * sp.kn(2,x) + (1/2) * np.exp(x) * cte * (x**2) * (-sp.kn(1,x) -sp.kn(3,x))
-# #     return result
-
-# # @np.vectorize
-# # def xF(x, xg, s, mq, Mmed, mx, gr, gl, gx):
-# #     logint = (3/2)* ( (Za(x, xg, s, mq, Mmed, mx, gr, gl, gx) * (Yeq(x)**2)) / (Yeq(x) - Yeq_prime(x)) )
-
-# #     return np.log10(logint)
-
-# @np.vectorize
-# def Ytoday1(sig0, xg, s, mq, Mmed, mx, gr, gl, gx):
-    
-#     YEQxf = (45/4*np.pi**4) *  ((xf**2 *sp.kn(2, xf)) / heff)
-    
-#     Yf = (1 + deltaf) * (YEQxf)
-    
-#     Af = quad(Za1, xf, inff, args=(sig0, xg, s, mq, Mmed, mx, gr, gl, gx), limit=intlimit, epsabs=erroabs, epsrel=errorel)[0]
-    
-#     Ytoday =  Yf / (1 + (Yf * Af))
-    
-#     return Ytoday
-
-
-# @np.vectorize
-# def OHM_relic(sig0, xg , s, mq, Mmed, mx, gr, gl, gx):
-#     #Fixed parameters
-    
-#     Npoints = 40
-#     xf = 28
-#     Tf = mx / xf
-#     heff = 1
-#     deltaf = 1
-#     inff = 100
-#     ohmprefac = (mx * s0 * h**2) / rho 
-#     newOHM_dm = ohmprefac  * Ytoday1(sig0, xg, s, mq, Mmed, mx, gr, gl, gx)
-
-
-#     ### Correct for the naive calculation from Gondolo (1991)
-#     correction = (4*mx**2)/(xf*(np.pi**(3/2))* Mmed * GMF(xg, s, mq, Mmed, mx, gr, gl, gx)  )
-#     Ohm_correct =  correction * newOHM_dm
-
-#     return Ohm_correct
-
-
-
-
-
-        
-
-# @np.vectorize
-# def Za(x, xg, s, mq, Mmed, mx, gr, gl, gx, dmname):
-#     result = np.sqrt((np.pi/45)*gst) * (mx/x**2) * Mplanck * sigmav_x(x, xg, s, mq, Mmed, mx, gr, gl, gx, dmname)
-#     if np.isnan(result):
-#         return 0
-#     else:
-#         return result
-
-# @np.vectorize
-# def Ytoday(xg, s, mq, Mmed, mx, gr, gl, gx, dmname):
-    
-#     YEQxf = (45/4*np.pi**4) *  ((xf**2 *sp.kn(2, xf)) / heff)
-    
-#     Yf = (1 + deltaf) * (YEQxf)
-    
-#     Af = quad(Za, xf, inff, args=(xg, s, mq, Mmed, mx, gr, gl, gx, dmname), limit=intlimit, epsabs=erroabs, epsrel=errorel)[0]
-    
-#     Ytoday =  Yf / (1 + (Yf * Af))
-    
-#     return Ytoday
-
-
-# @np.vectorize
-# def newOHM_relic(xg, s, mq, Mmed, mx, gr, gl, gx, dmname):
-#     #Fixed parameters
-    
-#     Npoints = 40
-#     xf = 28
-#     Tf = mx / xf
-#     heff = 1
-#     deltaf = 1
-#     inff = 100
-#     ohmprefac = (mx * s0 * h**2) / rho 
-#     newOHM_dm = ohmprefac  * Ytoday(xg, s, mq, Mmed, mx, gr, gl, gx, dmname)
-
-#     print(newOHM_dm)
-#     return newOHM_dm
-
-########################################################
-######################################################

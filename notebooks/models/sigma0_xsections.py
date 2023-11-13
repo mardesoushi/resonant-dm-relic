@@ -6,18 +6,18 @@ from numpy import sqrt as sqrt
 # ------------------------------------------------------------------------------
 
 @np.vectorize
-def GMSM(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):
-    # if Mmed < 2*mx:
-    #     return np.nan
+def GMSM(s, mq, Mmed, mx, gr, gl, gx, Nf):
+    if Mmed < 2*mx:
+        return np.nan
     M = Mmed
     Gamma_SM = (np.sqrt(1 - 4*(mq**2)/(M**2)) * ((gl**2)*(M**2 - mq**2) + 6*gl*gr*(mq**2) + (gr**2)*((M**2) - (mq**2))))/(24*np.pi*M)  ## x9 for all SM fermions
     
-    return Nfermions*Gamma_SM
+    return Nf*Gamma_SM
 
 @np.vectorize
-def GMS(s, mq, Mmed, mx, gr, gl, gx):
-    # if Mmed < 2*mx:
-    #     return np.nan
+def GMS(s, mq, Mmed, mx, gr, gl, gx, Nf):
+    if Mmed < 2*mx:
+        return np.nan
     M = Mmed
     
     gxs = gx
@@ -26,9 +26,9 @@ def GMS(s, mq, Mmed, mx, gr, gl, gx):
     return Gamma_SDM
 
 @np.vectorize
-def GMF(s, mq, Mmed, mx, gr, gl, gx):
-    # if Mmed < 2*mx:
-    #     return np.nan
+def GMF(s, mq, Mmed, mx, gr, gl, gx, Nf):
+    if Mmed < 2*mx:
+        return np.nan
     M = Mmed
     grx = glx = gx
 
@@ -38,9 +38,9 @@ def GMF(s, mq, Mmed, mx, gr, gl, gx):
 
 
 @np.vectorize
-def GMV(s, me, Mmed, mx, gr, gl, gx):
-    # if Mmed < 2*mx:
-    #     return np.nan
+def GMV(s, me, Mmed, mx, gr, gl, gx, Nf):
+    if Mmed < 2*mx:
+        return np.nan
     
     m_f = mx 
     M_med = Mmed 
@@ -89,7 +89,7 @@ class GM:
 # SCALAR DARK MATTER
 # ------------------------------------------------------------------------------
 @np.vectorize
-def sig0_S(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):    ## integrated total cross section \sigma_0 (ee -> Z' -> XX)
+def sig0_S(s, mq, Mmed, mx, gr, gl, gx, Nf):    ## integrated total cross section \sigma_0 (ee -> Z' -> XX)
 
     if s < 4*(mx**2): ##Define the correct physical domain for s channel 
         return np.nan  
@@ -102,8 +102,8 @@ def sig0_S(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):    ## integrated total c
 
 
         dmname = 'Scalar'
-        Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nfermions)
-        Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx)
+        Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
+        Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
         Gamma = Bi + Bf
         
         #totalCS = gxs**2*np.sqrt(-4*mq**2 + s)*( (np.sqrt((-4*mx**2 + s)))*(-4*mx**2 + s))*(-mq**2*(gl**2 - 6*gl*gr + gr**2) + s*(gl**2 + gr**2))/(96*np.pi*s**2*(Gamma**2*M**2 + (M**2 - s)**2))
@@ -115,7 +115,7 @@ def sig0_S(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):    ## integrated total c
 # FERMION DARK MATTER
 # ------------------------------------------------------------------------------
 @np.vectorize
-def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):  ## integrated total cross section FERMION \sigma_0 (ee -> Z' -> XX)
+def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nf):  ## integrated total cross section FERMION \sigma_0 (ee -> Z' -> XX)
 
     if s < 4*(mx**2): ##Define the correct physical domain for s channel 
         return np.nan  
@@ -129,8 +129,8 @@ def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):  ## integrated total cro
         #----------------
         
         dmname = 'Fermion'
-        Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nfermions)
-        Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx)
+        Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
+        Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
         Gamma = Bi + Bf
 
         
@@ -172,7 +172,7 @@ def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):  ## integrated total cro
 #         return totalCS
 
 @np.vectorize
-def sig0_V(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):
+def sig0_V(s, mq, Mmed, mx, gr, gl, gx, Nf):
 
     M_med = Mmed
     m_f = mx 
@@ -184,8 +184,8 @@ def sig0_V(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):
         return np.nan      
     
     dmname = 'Vector'
-    Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nfermions)
-    Bf = GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx)
+    Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
+    Bf = GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
     Gamma = Bi + Bf    
     
     result = (1/192)*g_dm**2*(g_l**2 + g_r**2)*sqrt(-4*m_f**2 + s)*(-48*M_med**2*m_f**6 - 68*M_med**2*m_f**4*s + 16*M_med**2*m_f**2*s**2 + M_med**2*s**3 + 192*m_f**4*s**2 - 96*m_f**2*s**3 + 12*s**4)/(M_med**2*m_f**4*sqrt(s)*(Gamma**2*M_med**2 + M_med**4 - 2*M_med**2*s + s**2))
@@ -202,40 +202,40 @@ def sig0_V(s, mq, Mmed, mx, gr, gl, gx, Nfermions = 6):
 
 ########### BW Cross Section ######################
 @np.vectorize
-def BW_sigma_S( s, mq, Mmed, mx, gr, gl, gx):
+def BW_sigma_S( s, mq, Mmed, mx, gr, gl, gx, Nf):
     dmname = 'Scalar'
     Ss = 1/2 ## Fermion spin - initial state
     Jj = 1 ## Z' spin
     M = Mmed
-    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx)
-    Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx) / Gamma
-    Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) / Gamma
+    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
+    Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
+    Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
     cs = 16*np.pi*Bf*Bi*Gamma**2*M**2*(2*Jj + 1)/((2*Ss + 1)**2*(-4*mq**2 + s)*(Gamma**2*M**2 + (M**2 - s)**2))
 
     return cs
 
 @np.vectorize
-def BW_sigma_F( s, mq, Mmed, mx, gr, gl, gx):
+def BW_sigma_F( s, mq, Mmed, mx, gr, gl, gx, Nf):
     dmname = 'Fermion'
     Ss = 1/2 ## Fermion spin - initial state
     Jj = 1 ## Z' spin
     M = Mmed
-    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx)
-    Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx) / Gamma
-    Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) / Gamma
+    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
+    Bi = GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
+    Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
     cs = 16*np.pi*Bf*Bi*Gamma**2*M**2*(2*Jj + 1)/((2*Ss + 1)**2*(-4*mq**2 + s)*(Gamma**2*M**2 + (M**2 - s)**2))
 
     return cs
 
 @np.vectorize
-def BW_sigma_V( s, mq, Mmed, mx, gr, gl, gx):
+def BW_sigma_V( s, mq, Mmed, mx, gr, gl, gx, Nf):
     dmname = 'Vector'
     Ss = 1/2 ## Fermion spin - initial state
     Jj = 1 ## Z' spin
     M = Mmed
-    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx)
-    Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx) / Gamma
-    Bf = GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx) / Gamma
+    Gamma =  GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf) + GM('SM').GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
+    Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
+    Bf = GM(dmname).GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf) / Gamma
     cs = 16*np.pi*Bf*Bi*Gamma**2*M**2*(2*Jj + 1)/((2*Ss + 1)**2*(-4*mq**2 + s)*(Gamma**2*M**2 + (M**2 - s)**2))
 
     return cs

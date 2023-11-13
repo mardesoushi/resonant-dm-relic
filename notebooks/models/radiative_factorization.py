@@ -14,7 +14,7 @@ errorel = 1
 intlimit = 10
 
 @np.vectorize
-def HPhsig(s, mq, Mmed, mx, gr, gl, gx, sig0, Nfermions = 6):
+def HPhsig(s, mq, Mmed, mx, gr, gl, gx, sig0, Nf):
     
     #xgmin = 0.10 ## 4% do feixe
     #xgmax = 0.66 ## 66% do feixe
@@ -36,7 +36,7 @@ def HPhsig(s, mq, Mmed, mx, gr, gl, gx, sig0, Nfermions = 6):
 
         preterm   = 1 / xg
         integrand = (1 - (xg) + ((xg**2) / 2))
-        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx, Nfermions) / sig0(s, mq, Mmed, mx, gr, gl, gx, Nfermions)
+        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx, Nf) / sig0(s, mq, Mmed, mx, gr, gl, gx, Nf)
         result    = preterm * integrand * sigcorr
         return result
 
@@ -52,7 +52,7 @@ def HPhsig(s, mq, Mmed, mx, gr, gl, gx, sig0, Nfermions = 6):
     termcte      = ((-17/36) + (1/6)*(np.pi**2))            ## sempre positivo, = 1.17271184
     keys_tot     = (parentesis1 * parentesis2)  + termcte   ## positivo se parentesis2 for positivo
     delta        = ((2*alph/np.pi)*keys_tot)
-    hp           = sig0(s, mq, Mmed, mx, gr, gl, gx, Nfermions) * (1 + delta )  ## xsec sempre positiva
+    hp           = sig0(s, mq, Mmed, mx, gr, gl, gx, Nf) * (1 + delta )  ## xsec sempre positiva
     return hp
 
 
@@ -76,7 +76,7 @@ def HPhsig(s, mq, Mmed, mx, gr, gl, gx, sig0, Nfermions = 6):
 
 
 @np.vectorize
-def integrandxi(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
+def integrandxi(xg, s, mq, Mmed, mx, gr, gl, gx, sig0, Nf):
 
 
     # Atualização 24-06-2023
@@ -96,7 +96,7 @@ def integrandxi(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
 
         preterm   = 1 / xg
         integrand = (1 - (xg) + ((xg**2) / 2))
-        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx) / sig0(s, mq, Mmed, mx, gr, gl, gx)
+        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx, Nf) / sig0(s, mq, Mmed, mx, gr, gl, gx, Nf)
         result    = preterm * integrand * sigcorr
         return result
 
@@ -116,7 +116,7 @@ def integrandxi(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
 
 
 @np.vectorize
-def deltaonly(xgm, xgmx, s, mq, Mmed, mx, gr, gl, gx, sig0):
+def deltaonly(xgm, xgmx, s, mq, Mmed, mx, gr, gl, gx, sig0, Nf):
 
 
 
@@ -135,7 +135,7 @@ def deltaonly(xgm, xgmx, s, mq, Mmed, mx, gr, gl, gx, sig0):
 
         preterm   = 1 / xg
         integrand = (1 - (xg) + ((xg**2) / 2))
-        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx) / sig0(s, mq, Mmed, mx, gr, gl, gx)
+        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx, Nf) / sig0(s, mq, Mmed, mx, gr, gl, gx, Nf)
         result    = preterm * integrand * sigcorr
         return result
 
@@ -156,7 +156,7 @@ def deltaonly(xgm, xgmx, s, mq, Mmed, mx, gr, gl, gx, sig0):
 
 
 @np.vectorize
-def dsigmadxgamma(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
+def dsigmadxgamma(xg, s, mq, Mmed, mx, gr, gl, gx, sig0, Nf):
 
 
     # Atualização 24-06-2023
@@ -175,7 +175,7 @@ def dsigmadxgamma(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
 
         preterm   = 1 / xg
         integrand = (1 - (xg) + ((xg**2) / 2))
-        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx) / sig0(s, mq, Mmed, mx, gr, gl, gx)
+        sigcorr   = sig0(s*(1-xg), mq, Mmed, mx, gr, gl, gx, Nf) / sig0(s, mq, Mmed, mx, gr, gl, gx, Nf)
         result    = preterm * integrand * sigcorr
         return result
 
@@ -191,7 +191,7 @@ def dsigmadxgamma(xg, s, mq, Mmed, mx, gr, gl, gx, sig0):
     termcte      = ((-17/36) + (1/6)*(np.pi**2))            ## sempre positivo, = 1.17271184
     keys_tot     = (parentesis1 * parentesis2)  + termcte   ## positivo se parentesis2 for positivo
     delta        = ((2*alph/np.pi)*keys_tot)
-    hp           = sig0(s, mq, Mmed, mx, gr, gl, gx) * (1 + delta )  ## xsec sempre positiva
+    hp           = sig0(s, mq, Mmed, mx, gr, gl, gx, Nf) * (1 + delta )  ## xsec sempre positiva
     return hp
 
 
