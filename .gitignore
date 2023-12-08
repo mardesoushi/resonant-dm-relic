@@ -1,0 +1,6 @@
+*data*
+__pycache__
+*.ipynb_checkpoints*
+*.pdf
+notebooks/utils/__pycache__/colorb_2D.cpython-310.pyc
+notebooks/utils/__pycache__/colorb_2D.cpython-310.pyc

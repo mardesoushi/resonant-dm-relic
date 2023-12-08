@@ -160,7 +160,7 @@ def cb_plot3x1_relic(process, figure_name, omegarelic_mass, dmlist, gr,
                     )
             fsize = 18
 
-        ax[fignumber].set_ylim(0, 2.50) ## plot 'resolution'
+        ax[fignumber].set_ylim(mx_grid_ohm[0][0], mx_grid_ohm[-1][0]) ## plot 'resolution'
 
         im = ax[fignumber].pcolormesh(Mmed_grid_ohm, mx_grid_ohm, omegarelic_mass[dmname]['data'], vmax=1, vmin=0, cmap=cmap) ##sessão de choque convertida para fb
 
@@ -214,7 +214,7 @@ def cb_plot3x1_relic(process, figure_name, omegarelic_mass, dmlist, gr,
         
         ### FORMAÇÃO DA LEGENDA (PERFEITA)
         #plt.subplots_adjust(right=0.76)
-        ax[fignumber].set_xlim(0, 5.0) ## plot 'resolution'
+        ax[fignumber].set_xlim(Mmed_grid_ohm[0][0], Mmed_grid_ohm[0][-1]) ## plot 'resolution'
         artists1, labels1 = countour_relic.legend_elements()
         labels1[0] = r'${\Omega _\chi }{h^2} \geq 0.120$ (PLANCK 2018)' 
         current_handles, current_labels = plt.gca().get_legend_handles_labels()
