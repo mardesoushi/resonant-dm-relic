@@ -1,6 +1,8 @@
 #
 from sympy.combinatorics.permutations import Permutation
 from sympy import *
+from IPython.display import display
+#from torch import JitType
 
 init_printing()
 #
@@ -246,11 +248,14 @@ def polbar(pp, ha):
     phi = pp[3]
     if ha > 0:
         result = pol_min(theta, phi)
+        display(f'+ pol {result}')
     elif ha < 0:
         result = pol_plus(theta, phi)
+        display(f'- pol {result}')
     else:
         result = pol_0(e0, m0, theta, phi)
-    return result
+        display(f'0 pol {result}')
+    return transpose(result) ## Modified 2023-12-13, add transpose conjugation
 
 
 #
@@ -266,9 +271,9 @@ def fourvec(pp):
 
     h0 = elm3 / 2
     h1 = 2 * sin(h0) * cos(h0)
-    h2 = cos(h0) ** 2 - sin(h0) ** 2
+    h2 = (cos(h0) ** 2) - (sin(h0) ** 2)
     p = sqrt(elm1**2 - elm2**2)
-    #result = [elm1, p * h1 * cos(elm4), p * h1 * sin(elm4), p * h2] -- Adiconei matrix aqui
+    #result = [elm1, p * h1 * cos(elm4), p * h1 * sin(elm4), p * h2] -- Marcio: Adiconei matrix aqui
     result = Matrix([elm1, p * h1 * cos(elm4), p * h1 * sin(elm4), p * h2])
     return result
 
@@ -1032,54 +1037,14 @@ def V3ZOutOut_VDM(k, hk, p, hp, qv, mmed, cv, ca, secterm = True):
 
 
 ## F + F -> S
-def vbu_SDM(p1, h1, p2, h2, qv, mmed, cv, ca, secterm = True):
+def ff_SDM_(p1, h1, p2, h2, qv, mmed):
 
-    st = 1 if secterm else 0 
-
-    #mediator mass = qv[1]
-    qvec = qv / mmed
-
-    gf, gl, gr, grv, gra, glv, gla = symbols(r'g_f g_l g_r g_{rv} g_{ra} g_{lv} g_{la}', real=True, )
-
-    
-
-    # GCW theory
-    
-    # gz = gw / cos(thetaw)
-    #glv = cv / 2
-    #gla = ca / 2
-    #gz_theta = (gw / cos(thetaw))
-    
-    #gw_theta = gw * cos(thetaw)
-    EWproj = -I * gf * (glv * one - gla * g5)
-    Glr = - I * (gl * (glv * one - gla * g5)  + gr * (grv * one + gra * g5)) / 2
-    
-    ## EXPLANATION:
-    # gr = 0 -> usual matter, no right handed stuff
-    # gl = 0 -> exotic matter, only right handed stuff
-    # gl = gr -> mixing, two things coexist
-    # gl = - gr -> ???
-    # glv, gla, gra, grv vector or axial vector stuff, given a right or left handed scenario, in a right handded scenario replaced by ca and cv, should give EW theory
-
-
-
-    j0 = -I * (vbar(p1, h1) * g0 * Glr * u(p2, h2)) #* I #- st * vbar(p1, h1) * g0 * Glr * qvec[0]  * u(p2, h2) )
-    j1 = -I * (vbar(p1, h1) * g1 * Glr * u(p2, h2)) #* I #- st * vbar(p1, h1) * g1 * Glr * qvec[1]  * u(p2, h2) )
-    j2 = -I * (vbar(p1, h1) * g2 * Glr * u(p2, h2)) #* I #- st * vbar(p1, h1) * g2 * Glr * qvec[2]  * u(p2, h2) )
-    j3 = -I * (vbar(p1, h1) * g3 * Glr * u(p2, h2)) #* I #- st * vbar(p1, h1) * g3 * Glr * qvec[3]  * u(p2, h2) )
-    result = Matrix([simplify(j0[0]), simplify(j1[0]), simplify(j2[0]), simplify(j3[0])]) 
-    return result
-
-
-# S -> F + -F 
-def SDM_vbu_XX(p1, h1, p2, h2, qv, mmed, cv, ca, secterm = True):
-
-    st = 1 if secterm else 0 
+    #st = 1 if secterm else 0 
 
     #mediator mass = qv[1]
     qvec = qv / mmed
 
-    gf, gl, gr, grv, gra, glv, gla = symbols(r'g_f g_l g_r g_{rv} g_{ra} g_{lv} g_{la}', real=True, )
+    gf, gs = symbols(r'g_f g_s', real=True)
 
     
 
@@ -1092,7 +1057,7 @@ def SDM_vbu_XX(p1, h1, p2, h2, qv, mmed, cv, ca, secterm = True):
     
     #gw_theta = gw * cos(thetaw)
     #EWproj = -I * gf * (glv * one - gla * g5)
-    Glr = - I * (gl * (glv * one - gla * g5)  + gr * (grv * one + gra * g5)) / 2
+    GS =  - I * (gs) # * (glv * one - gla * g5)  + grx * (grv * one + gra * g5)) / 2
     
     ## EXPLANATION:
     # gr = 0 -> usual matter, no right handed stuff
@@ -1103,11 +1068,276 @@ def SDM_vbu_XX(p1, h1, p2, h2, qv, mmed, cv, ca, secterm = True):
 
 
 
-    j0 = -I * (vbar(p1, h1) * g0 * Glr * u(p2, h2))
-    j1 = -I * (vbar(p1, h1) * g1 * Glr * u(p2, h2)) 
-    j2 = -I * (vbar(p1, h1) * g2 * Glr * u(p2, h2)) 
-    j3 = -I * (vbar(p1, h1) * g3 * Glr * u(p2, h2))
+    j0 =  (vbar(p1, h1) * GS * u(p2, h2)) #* I #- st * vbar(p1, h1) * g0 * Glr * qvec[0]  * u(p2, h2) )
+    j1 =  (vbar(p1, h1) * GS * u(p2, h2)) #* I #- st * vbar(p1, h1) * g1 * Glr * qvec[1]  * u(p2, h2) )
+    j2 =  (vbar(p1, h1) * GS * u(p2, h2)) #* I #- st * vbar(p1, h1) * g2 * Glr * qvec[2]  * u(p2, h2) )
+    j3 =  (vbar(p1, h1) * GS * u(p2, h2)) #* I #- st * vbar(p1, h1) * g3 * Glr * qvec[3]  * u(p2, h2) )
+    result = Matrix([simplify(j0[0]), simplify(j1[0]), simplify(j2[0]), simplify(j3[0])]) 
+    return result
+
+
+# S -> F + -F 
+def _SDM_ff(p1, h1, p2, h2, qv, mmed):
+
+    #st = 1 if secterm else 0 
+
+    #mediator mass = qv[1]
+    qvec = qv / mmed
+
+    gf, gsx = symbols(r'g_f g_sx', real=True )
+
+    
+
+    GS =  - I * (gsx) # * (glv * one - gla * g5)  + grx * (grv * one + gra * g5)) / 2
+    
+    ## EXPLANATION:
+    # gr = 0 -> usual matter, no right handed stuff
+    # gl = 0 -> exotic matter, only right handed stuff
+    # gl = gr -> mixing, two things coexist
+    # gl = - gr -> ???
+    # glv, gla, gra, grv vector or axial vector stuff, given a right or left handed scenario, in a right handded scenario replaced by ca and cv, should give EW theory
+
+
+
+    j0 = (vbar(p1, h1) * GS * u(p2, h2))
+    j1 = (vbar(p1, h1) * GS * u(p2, h2)) 
+    j2 = (vbar(p1, h1) * GS * u(p2, h2)) 
+    j3 = (vbar(p1, h1) * GS * u(p2, h2))
     result = Matrix([simplify(j0[0]), simplify(j1[0]), simplify(j2[0]), simplify(j3[0])])
     return result
+
+
+
+def phi(pp, ha):
+    res = Matrix([[1], [1], [1], [1]])
+    return res
+
+def phibar(pp, ha):
+    res = Matrix([[1, 1, 1, 1]])
+    return res
+
+
+
+def Amplitude_schannel(u1, p1, u2, p2, prp, u3, p3, u4, p4):
+
+
+    ## Breit-Wigner denominator, to be added in the end of the calculation for simplicity. 
+    spinor = {
+            'u'         : {'type': 'F', 'fn': u},
+            'v'         : {'type': 'F', 'fn': v},
+            'vbar'      : {'type': 'F', 'fn': vbar},
+            'ubar'      : {'type': 'F', 'fn': ubar},
+            'pol'       : {'type': 'V', 'fn': pol},
+            'polbar'    : {'type': 'V', 'fn': polbar},	
+            'phi'       : {'type': 'S', 'fn': phi},
+            'phibar'    : {'type': 'S', 'fn': phibar}
+            }
+    
+    # prop = {
+    #         'scalar'    : 'S',
+    #         'vector'    : 'V',
+    #         'axial'     : 'A',
+    #         'pseudoscalar' : 'P',
+    #         'fermion' : 'F',
+    # }
+    
+    ## Breit-Wigner denominator, to be added in the end of the calculation for simplicity. 
+    def get_propagator(prop, type1, dm = False):
+
+        # pick the correct indice for SM or DM mechanics
+        dmsm = r"\chi" if dm else r"\psi"
+
+        s, Mmed, Gamma    =  symbols(r's M_{med} Gamma', real=True )
+        gs, gps           =  symbols(f'g_s{dmsm} g_ps{dmsm}', real=True )
+        gv, gav           =  symbols(f'g_v{dmsm} g_av{dmsm}', real=True )
+        #gs, gps, gsx =  symbols(r'g_{v} g_{ps} g_{sx}', real=True )
+
+        denom = (s - Mmed**2 + I * (Mmed * Gamma))
+        
+        if prop == 'scalar':
+            vertex = {
+                        f"F" : -I * ( gs * one + I * gps * g5 ), ## scalar and pseudoscalar couplings
+                        f"V" : -I *  gs * one,                  ## Scalar vector coupling
+                        f"S" : -I *  gs * one,                  ## Triple scalar simple coupling
+                     }                  
+
+            propagator = -1 / denom
+
+        elif prop == 'vector':
+            # vertex = {
+            #             f"{type1}{type2}": -I * ( gs * one + I * gps * g5 ), ## scalar and pseudoscalar couplings
+            #             f"{type1}{type2}": -I *  gsx * one,
+            #             f"{type1}{type2}": -I *  gsx * one,
+            #          }                  ## Triple scalar simple coupling
+            pass
+
+        elif prop == 'fermion':
+            print('Not yet')
+            pass
+    
+        return vertex[type1], propagator
+    
+
+    def init_J():
+        hel_fermion = [-1 , 1 ]
+        vertex, propagator = get_propagator(prp, spinor[u1]['type']) ## Get initial propagator
+        Jc_init = [] ## define initial current 
+        for hl in hel_fermion:
+            for hr in hel_fermion:    
+                jc = []
+                for i in range(4):
+                    #print(spinor[u1](p1, hl))
+                    #print('newspinor')
+                    ji = spinor[u1]['fn'](p1, hl) * vertex * propagator *  spinor[u2]['fn'](p2, hr)   ## IMPORTANT!!! intial current - propagator only here
+                    jc.append(simplify(ji[0]))
+
+                Jc_init.append(Matrix(jc))
+
+        return Jc_init
+
+    def final_J(types):
+        hel_fermion = [-1 , 1 ] if  types != 'V' else [-1 ,0, 1 ]
+        vertex, propagator = get_propagator(prp, types, dm=True) ## Get initial propagator
+        Jc_final = [] ## define initial current 
+        for hl in hel_fermion:
+            for hr in hel_fermion:    
+                jc = []
+                for i in range(4):
+                    #print(spinor[u3](p3, hl))
+                    jf = spinor[u3]['fn'](p3, hl) * vertex  * spinor[u4]['fn'](p4, hr)  ## IMPORTANT!!! # second current
+                    #print(jf)
+                    jc.append(simplify(jf[0]))
+
+                Jc_final.append(Matrix(jc))
+
+        return Jc_final
+    
+    ## Trace final result
+    Ji = init_J()
+    Jf = final_J(spinor[u4]['type'])
+    Terms = []
+    for j_init in Ji:
+        for j_final in Jf:
+            #print('append term')
+
+            Terms.append(simplify(dotprod4(j_init , j_final)))
+    
+
+    return Terms
+
+
+def decaimento_Gamma(prp, u3, p3, u4, p4):
+
+
+    ## Breit-Wigner denominator, to be added in the end of the calculation for simplicity. 
+    spinor = {
+            'u'         : {'type': 'F', 'fn': u},
+            'v'         : {'type': 'F', 'fn': v},
+            'vbar'      : {'type': 'F', 'fn': vbar},
+            'ubar'      : {'type': 'F', 'fn': ubar},
+            'pol'       : {'type': 'V', 'fn': pol},
+            'polbar'    : {'type': 'V', 'fn': polbar},	
+            'phi'       : {'type': 'S', 'fn': phi},
+            'phibar'    : {'type': 'S', 'fn': phibar}
+            }
+    
+    # prop = {
+    #         'scalar'    : 'S',
+    #         'vector'    : 'V',
+    #         'axial'     : 'A',
+    #         'pseudoscalar' : 'P',
+    #         'fermion' : 'F',
+    # }
+    
+    ## Breit-Wigner denominator, to be added in the end of the calculation for simplicity. 
+    def get_propagator(prop, types, dm = False):
+
+        # pick the correct indice for SM or DM mechanics
+        dmsm = r"\chi" if dm else r"\psi"
+
+        s, Mmed, Gamma    =  symbols(r's M_{med} Gamma', real=True )
+        gs, gps           =  symbols(f'g_s{dmsm} g_ps{dmsm}', real=True )
+        gv, gav           =  symbols(f'g_v{dmsm} g_av{dmsm}', real=True )
+        #gs, gps, gsx =  symbols(r'g_{v} g_{ps} g_{sx}', real=True )
+
+        denom = (s - Mmed**2 + I * (Mmed * Gamma))
+        
+        if prop == 'scalar':
+            vertex = {
+                        f"F" : I * -I * ( gs * one),# + I * gps * g5 ), ## scalar and pseudoscalar couplings
+                        f"V" : I * gs * one,                  ## Scalar vector coupling
+                        f"S" : -I *  gs * one,                  ## Triple scalar simple coupling
+                     }                  
+
+            propagator = -1 / denom
+
+        elif prop == 'vector':
+            # vertex = {
+            #             f"{type1}{type2}": -I * ( gs * one + I * gps * g5 ), ## scalar and pseudoscalar couplings
+            #             f"{type1}{type2}": -I *  gsx * one,
+            #             f"{type1}{type2}": -I *  gsx * one,
+            #          }                  ## Triple scalar simple coupling
+            pass
+
+        elif prop == 'fermion':
+            print('Not yet')
+            pass
+    
+        return vertex[types], propagator
+    
+
+    def init_J(types):
+        #print(types)
+        hel_fermion = [-1 , 1 ] if  types != 'V' else [-1 ,0, 1 ]
+        vertex, propagator = get_propagator(prp, types) ## Get initial propagator
+        Jc_init = [] ## define initial current 
+        for hl in hel_fermion: 
+            jc = []
+            for i in range(4):
+                #print(hl)
+                #print(spinor[u1](p1, hl))
+                #print('newspinor')
+                ji =  spinor[u3]['fn'](p3, hl) * vertex  
+                jc.append(simplify(ji[0]))
+
+            Jc_init.append(Matrix(jc))
+
+        return Jc_init
+
+    def final_J(types):
+        #print(types)
+        hel_fermion = [-1 , 1 ] if  types != 'V' else [-1 ,0, 1 ]
+        vertex, propagator = get_propagator(prp, types, dm=True) ## Get initial propagator
+        Jc_final = [] ## define initial current 
+        
+        for hl in hel_fermion:  
+            jc = []
+
+            for i in range(4):
+                #print(hl)
+                #print(spinor[u3](p3, hl))
+                jf =   one * spinor[u4]['fn'](p4, hl)   
+                #print(jf)
+                jc.append(simplify(jf[0]))
+
+            Jc_final.append(Matrix(jc))
+
+        return Jc_final
+    
+    ## Trace final result
+    Ji = init_J(spinor[u3]['type'])
+    Jf = final_J(spinor[u4]['type'])
+    Terms = []
+    for j_init in Ji:
+        for j_final in Jf:
+            #print('append term')
+
+            Terms.append(simplify(dotprod4(j_init , j_final)))
+    
+
+    return Terms
+
+
+
 
 print("Done")
