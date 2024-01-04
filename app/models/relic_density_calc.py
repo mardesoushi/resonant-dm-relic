@@ -1,7 +1,7 @@
 import numpy as np
 #import scipy as sp
-import fortran_quad
-import models.sigma0_xsections as sig0
+#import fortran_quad
+#import models.sigma0_xsections as sig0
 from scipy.integrate import quad as spquad
 
 
@@ -296,7 +296,7 @@ def super_naive(s, mq, Mmed, mx, gr, gl, gx, dmname, Nf):
     #print(b, 'b')
     return Ohm_h2
 
-import cupy as cp
+#import cupy as cp
 @cp.vectorize
 def cp_super_naive(s, mq, Mmed, mx, gr, gl, gx, dmname, Nf):
 
