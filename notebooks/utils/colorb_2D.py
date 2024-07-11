@@ -19,15 +19,15 @@ import datetime
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 # Get the 'twilight' colormap
-cmap = plt.colormaps['twilight']
-colorsmod = [cmap(i) for i in range(cmap.N)]
-new_colors = colorsmod[0:len(colorsmod) - 100] #= plt.get_cmap('Reds')(256)  # Change the last color to red
-new_cmap = ListedColormap(new_colors, name='modified_twilight')
+#cmap = plt.colormaps['twilight']
+#colorsmod = [cmap(i) for i in range(cmap.N)]
+#new_colors = colorsmod[0:len(colorsmod) - 100] #= plt.get_cmap('Reds')(256)  # Change the last color to red
+#'twilight' = ListedColormap(new_colors, name='modified_twilight')
 
 
 
 def cb_mass(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
-               cmap = new_cmap, fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None, fix_scale=True, vmin=1E1, vmax=1E15):
+               cmap = 'twilight', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None, fix_scale=True, vmin=1E1, vmax=1E15, figsize=(20, 6)):
 
 
     for fignumber, dmname in enumerate(dmlist):
@@ -41,7 +41,7 @@ def cb_mass(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
         
         # Set up figure and image grid  
         if fignumber == 0:
-            fig = plt.figure(figsize=(20, 6))
+            fig = plt.figure(figsize=figsize)
             ax = ImageGrid(fig, 111,          # as in plt.subplot(111)
                     nrows_ncols=(1,len(dmlist)),
                     axes_pad=(0.30, 0.0),
@@ -82,7 +82,7 @@ def cb_mass(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
 
         ## Plot Labels ##
         if fignumber == 0:
-            ab, = plt.plot(x1, y1, linewidth=3, color='gray', linestyle='solid', label=r'${m_\chi } = {M_{med} }/2$', rasterized=True)
+            #ab, = plt.plot(x1, y1, linewidth=3, color='gray', linestyle='solid', label=r'${m_\chi } = {M_{med} }/2$', rasterized=True)
             ac, = plt.plot(0, 0, linewidth=2.5, color='red', linestyle='dashed', label=r'$2{m_\chi } = 0.8{M_{med} }$', rasterized=True)
             ad, = plt.plot([], [], label=textstr, color = 'None')
             #af, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021', rasterized=True)
@@ -156,7 +156,7 @@ def cb_mass(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
             labelpad=0.02  #distance between the external axis and the text
             xlab_t = fig.text(bigextents[2], bigextents[1]-0.15, r'$Z^{\prime}$ mass [TeV]',
                 horizontalalignment='right', verticalalignment = 'bottom', size = fsize+2.5)
-            ylab_t = fig.text( bigextents[0]*0.7, bigextents[0]*7, r'DM mass, $m_{\chi}$ [TeV]',
+            ylab_t = fig.text(bigextents[0]*(figsize[0]*(-0.00001)), bigextents[0]*7, r'DM mass, $m_{\chi}$ [TeV]',
                 rotation='vertical', horizontalalignment = 'center', verticalalignment = 'top', size = fsize+2.5)
 
         if fignumber == len(dmlist) - 1: 
@@ -164,13 +164,13 @@ def cb_mass(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
             fig.savefig(f'{folder}/{figure_name}.pdf', dpi=300, bbox_inches = "tight")
 
             ## Plot Labels ##
-            plt.xlabel(r'$Z^{\prime}$ mass, $\sqrt{\hat s} = M_{med}$ [TeV]', fontsize = 20, loc = 'right')
-            plt.ylabel(r'DM mass, $m_{\chi}$ [TeV] ', fontsize = 20, loc='top')
+            #plt.xlabel(r'$Z^{\prime}$ mass, $\sqrt{\hat s} = M_{med}$ [TeV]', fontsize = 20, loc = 'right')
+            #plt.ylabel(r'DM mass, $m_{\chi}$ [TeV] ', fontsize = 20, loc='top')
 
 
 
 def cb_mass_relic(process, figure_name, omegarelic_mass, dmlist, gr,
-               cmap = 'Blues', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), low_limit=0, high_limit=1, data_object2 = None):
+               cmap = 'Blues', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), low_limit=0, high_limit=1, data_object2 = None, figsize = (20, 6), cms_line = False):
 
 
     for fignumber, dmname in enumerate(dmlist):
@@ -182,7 +182,7 @@ def cb_mass_relic(process, figure_name, omegarelic_mass, dmlist, gr,
         
         # Set up figure and image grid  
         if fignumber == 0:
-            fig = plt.figure(figsize=(20, 6))
+            fig = plt.figure(figsize=figsize)
             ax = ImageGrid(fig, 111,          # as in plt.subplot(111)
                     nrows_ncols=(1,len(dmlist)),
                     axes_pad=(0.30, 0.0),
@@ -256,19 +256,21 @@ def cb_mass_relic(process, figure_name, omegarelic_mass, dmlist, gr,
         textstr = textstr + '\n' + gp.ee_qq[process]
         ## Plot Labels ##
         if fignumber == 0:
-            ab, = plt.plot(x1, y1, linewidth=3, color='gray', linestyle='solid', label=r'${m_\chi } = {M_{med} }/2$', rasterized=True)
+            #ab, = plt.plot(x1, y1, linewidth=3, color='gray', linestyle='solid', label=r'${m_\chi } = {M_{med} }/2$', rasterized=True)
             ad, = plt.plot(0, 0, linewidth=2.5, color='red', linestyle='dashed', label=r'$2{m_\chi } = 0.8{M_{med} }$', rasterized=True)
-            ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021', rasterized=True)
+            if cms_line:
+                ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021', rasterized=True)
             ac, = plt.plot([], [], label=textstr, color = 'None')
 
-
+        ax[fignumber].set_xlim(0, 5.0) ## plot 'resolution'
+        ax[fignumber].set_ylim(0, 2.519) ## plot 'resolution'
         ax[fignumber].set_title(f'{dmname} DM', fontsize = fsize+5)
         ax[fignumber].tick_params(axis="x", labelsize=fsize+3)
         ax[0].tick_params(axis="y", labelsize=fsize+3)
         
         ### FORMAÇÃO DA LEGENDA (PERFEITA)
         #plt.subplots_adjust(right=0.76)
-        ax[fignumber].set_xlim(Mmed_grid_ohm[0][0], Mmed_grid_ohm[0][-1]) ## plot 'resolution'
+        #ax[fignumber].set_xlim(Mmed_grid_ohm[0][0], Mmed_grid_ohm[0][-1]) ## plot 'resolution'
         artists1, labels1 = countour_relic.legend_elements()
         labels1[0] = r'${\Omega _\chi }{h^2} \geq 0.120$ (PLANCK 2018)' 
         current_handles, current_labels = plt.gca().get_legend_handles_labels()
@@ -296,14 +298,14 @@ def cb_mass_relic(process, figure_name, omegarelic_mass, dmlist, gr,
             labelpad=0.02  #distance between the external axis and the text
             xlab_t = fig.text(bigextents[2], bigextents[1]-0.15, r'$Z^{\prime}$ mass [TeV]',
                 horizontalalignment='right', verticalalignment = 'bottom', size = fsize+2.5)
-            ylab_t = fig.text( bigextents[0]*0.7, bigextents[0]*7, r'DM mass, $m_{\chi}$ [TeV]',
+            ylab_t = fig.text( bigextents[0]-((0.05)), bigextents[0]*7, r'DM mass, $m_{\chi}$ [TeV]',
                 rotation='vertical', horizontalalignment = 'center', verticalalignment = 'top', size = fsize+2.5)
 
         if fignumber == len(dmlist) - 1:
             
             #fig.tight_layout()
             #plt.subplots_adjust(left=0.3, right=0.9, bottom=0.3, top=0.9)
-            fig.set_dpi(72)
+            fig.set_dpi(300)
             fig.savefig(f'{folder}/{figure_name}.pdf', dpi=300, bbox_inches = "tight", format='pdf')
                 
             ## Plot Labels ##
@@ -316,7 +318,7 @@ def cb_mass_relic(process, figure_name, omegarelic_mass, dmlist, gr,
 
 
 def cb_coupling_relic(process, figure_name, data_object, dmlist,
-                      cmap = 'Blues', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None):
+                      cmap = 'Blues', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None, figsize=(19, 18), cms_line=False):
 
 
     ## Cria um dicionário para a quantidade de figuras que serão plotadas
@@ -339,7 +341,7 @@ def cb_coupling_relic(process, figure_name, data_object, dmlist,
 
             # Set up figure and image grid  
             if fignumber == 0:
-                fig = plt.figure(figsize=(19, 18))
+                fig = plt.figure(figsize=figsize)
                 ax = ImageGrid(fig, 111,          # as in plt.subplot(111)
                     nrows_ncols=(3,len(dmlist)),
                     axes_pad=(0.6, 0.5),
@@ -400,7 +402,8 @@ def cb_coupling_relic(process, figure_name, data_object, dmlist,
             ## Plot Labels ##
             if fignumber == 0:
                 #ab, = plt.plot(x1, y1, linewidth=1, color='gray', linestyle='dashed', label=r'${g_r} = {g_\chi}$')
-                ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021', rasterized=True)
+                if cms_line:
+                    ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021', rasterized=True)
                 ac, = plt.plot([], [], label=textstr, color = 'None', rasterized=True)
 
             # DM subplot names
@@ -441,7 +444,7 @@ def cb_coupling_relic(process, figure_name, data_object, dmlist,
                 labelpad=0.02  #distance between the external axis and the text
                 xlab_t = fig.text(bigextents[2]-0.12, bigextents[1]-0.05, r'$g_{r(SM)}$',
                     horizontalalignment='right', verticalalignment = 'bottom', size = fsize+3.5)
-                ylab_t = fig.text( bigextents[0]*0.6, bigextents[0]*7, r'$g_{\chi}$' ,
+                ylab_t = fig.text( bigextents[0]*0.45, bigextents[0]*7, r'$g_{\chi}$' ,
                     rotation='vertical', horizontalalignment = 'center', verticalalignment = 'top', size = fsize+3.5)
                 
                 
@@ -461,7 +464,7 @@ def cb_coupling_relic(process, figure_name, data_object, dmlist,
 
 
 def cb_coupling(process, figure_name, data_object, data_relic, dmlist,
-                      cmap = new_cmap, fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None, fix_scale = True,  vmin=1E1, vmax=1E15):
+                      cmap = 'twilight', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), data_object2=None, fix_scale = True,  vmin=1E1, vmax=1E15, figsize=(19, 17)):
 
     ## Cria um dicionário para a quantidade de figuras que serão plotadas
     cp_fignum = [0 * len(dmlist), 1 * len(dmlist), 2 * len(dmlist)]
@@ -482,7 +485,7 @@ def cb_coupling(process, figure_name, data_object, data_relic, dmlist,
         
             # Set up figure and image grid  
             if fignumber == 0:
-                fig = plt.figure(figsize=(19, 17))
+                fig = plt.figure(figsize=figsize)
                 ax = ImageGrid(fig, 111,          # as in plt.subplot(111)
                     nrows_ncols=(3,len(dmlist)),
                     axes_pad=(0.6, 0.5),
@@ -582,7 +585,7 @@ def cb_coupling(process, figure_name, data_object, data_relic, dmlist,
                 labelpad=0.02  #distance between the external axis and the text
                 xlab_t = fig.text(bigextents[2]-0.035, bigextents[1]-0.045, r'$g_{r(SM)}$',
                     horizontalalignment='right', verticalalignment = 'bottom', size = fsize+3.5)
-                ylab_t = fig.text( bigextents[0]*0.6, bigextents[0]*7, r'$g_{\chi}$' ,
+                ylab_t = fig.text( bigextents[0]*0.45, bigextents[0]*7, r'$g_{\chi}$' ,
                     rotation='vertical', horizontalalignment = 'center', verticalalignment = 'top', size = fsize+3.5)
                 
             
@@ -600,7 +603,7 @@ def cb_coupling(process, figure_name, data_object, data_relic, dmlist,
             
             
 def cb_1D(process, figure_name, object, dmname,
-               cmap = new_cmap, fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), ):
+               cmap = 'twilight', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d'), ):
 
 
         Mmed_grid_ohm, mx_grid_ohm = object[dmname]['params']['Mmed'], object[dmname]['params']['mx'] # grid formation for plot
@@ -788,11 +791,11 @@ $m_{\chi} = M_{med} ~/ 3$
             ax[fignumber].axhline(y = 0.1, color='gray', linestyle='--', linewidth=0.5) 
 
 
-            textstr = textstr + '\n' + gp.ee_qq[process]
+            textstr = textstr  + gp.ee_qq[process]
             ## Plot Labels ##
             if fignumber == 0:
-                ax[0].axhline(y = 1, linewidth=2, color='red', linestyle='-', label=r'$g_q=0.25$')    
-                ax[0].text(.5, 0.85, r'$g_{\chi}=1.0$', ha='left', color='red', fontsize = fsize)
+                #ax[0].axhline(y = 1, linewidth=2, color='red', linestyle='-', label=r'$g_r = g_q = 0.25$')    
+                ax[0].text(1.70, 0.85, r'$g_r = g_q =0.25$', ha='left', color='k', fontsize = fsize)
                 #ab, = plt.plot([], [], linewidth=0, label=r'$g_q=0.25$')
                 ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021')
                 ac, = plt.plot([], [], label=textstr, color = 'None')
@@ -803,8 +806,11 @@ $m_{\chi} = M_{med} ~/ 3$
                 # ax[0].plot([], [], label=textstr, color = 'None')
 
             else:
-                ax[1].axhline(y = 0.25,  color='red', linestyle='-', label=r'$g_q=0.25$')    
-                ax[1].text(0.5, 0.210, r'$g_q=0.25$', ha='left', color='red', fontsize = fsize)
+                ax[1].axhline(y = 0.25,  color='red', linestyle='-', label=r'$g_r = g_q = 0.25$')    
+
+                ax[1].text(2., 0.85, r'$g_{\chi}=1.0$', ha='left', color='k', fontsize = fsize)
+
+                ax[1].text(0.8, 0.210, r'$g_r = g_q =0.25$', ha='left', color='red', fontsize = fsize)
                 #ab, = plt.plot([], [], linewidth=0, label= r'$g_{\chi}=1.0$')
                 ab, = plt.plot([], [], linewidth=1, color='blue', linestyle='solid', label='CMS - arXiv:2107.13021')
                 ac, = plt.plot([], [], label=textstr, color = 'None')   
@@ -852,31 +858,31 @@ $m_{\chi} = M_{med} ~/ 3$
                 artists1[0]._linewidth = 2.0
                 artists1[0]._edgecolor = (0.0, 0.0, 0.0, 1.0)
 
-                LEG =  ax[fignumber].legend(artists1, labels1, loc='upper right', fontsize = fsize-6.5, frameon=False)
+                LEG =  ax[fignumber].legend(artists1, labels1, loc='upper left', fontsize = fsize-6.5, frameon=False)
             
-            else:
+            # else:
 
 
-                #print(artists1)
-                print(artists2)
+            #     #print(artists1)
+            #     print(artists2)
 
-                artists2.extend(current_handles)
-                labels2.extend(current_labels)
-                artists2[0]._hatch = "\\\\\\\ "
-                #artists1[0].xy = [x00, y00]
-                artists2[0]._linestyle = 'dashed'
-                artists2[0]._dashes = True
-                artists2[0]._linewidth = 2.0
-                artists2[0]._edgecolor = (0.0, 0.0, 0.0, 1.0)
+            #     artists2.extend(current_handles)
+            #     labels2.extend(current_labels)
+            #     artists2[0]._hatch = "\\\\\\\ "
+            #     #artists1[0].xy = [x00, y00]
+            #     artists2[0]._linestyle = 'dashed'
+            #     artists2[0]._dashes = True
+            #     artists2[0]._linewidth = 2.0
+            #     artists2[0]._edgecolor = (0.0, 0.0, 0.0, 1.0)
 
-                LEG =  ax[fignumber].legend(artists2, labels2, loc='upper right', fontsize = fsize-6.5, frameon=False)
+            #     LEG =  ax[fignumber].legend(artists2, labels2, loc='upper left', fontsize = fsize-6.5, frameon=False)
 
 
             print(fignumber)
             #legenda_perfeita(fignumber, countour_relic.legend_elements(), plt.gca().get_legend_handles_labels())  
 
-            ax[0].text(1.58,0.36, r'$g_{r}=0.25$', ha='center', color='k', fontsize = fsize-6.5) 
-            ax[1].text(1.58, 0.36, r'$g_{\chi}=1.0$', ha='center', color='k', fontsize = fsize-6.5) 
+            #ax[0].text(1.65,0.36, r'$g_{r} = g_q = 0.25$', ha='center', color='k', fontsize = fsize-6.5) 
+            #ax[1].text(1.58, 0.36, r'$g_{\chi}=1.0$', ha='center', color='k', fontsize = fsize-6.5) 
 
             #get the extent of the largest box containing all the axes/subplots
             if fignumber ==  0:
@@ -911,12 +917,12 @@ $m_{\chi} = M_{med} ~/ 3$
                 
                 #fig.tight_layout()
                 #plt.subplots_adjust(left=0.3, right=0.9, bottom=0.3, top=0.9)
-                fig.set_dpi(72)
-                fig.savefig(f'{folder}/{figure_name}.pdf', dpi=72, bbox_inches = "tight")
+                fig.set_dpi(300)
+                fig.savefig(f'{folder}/{figure_name}.png', dpi=300, bbox_inches = "tight")
                     
 
-                plt.ylabel(r'Dark Z^{\prime} coupling, $g_{\chi}$', fontsize = 20, loc='top')
-                plt.xlabel(r'$SM Z^{\prime} coupling, g_r$', fontsize = 20, loc = 'right')
+                #plt.ylabel(r'Dark Z^{\prime} coupling, $g_{\chi}$', fontsize = 20, loc='top')
+                #plt.xlabel(r'$SM Z^{\prime} coupling, g_r$', fontsize = 20, loc = 'right')
                 plt.tick_params(axis="x", labelsize=20)
                 plt.tick_params(axis="y", labelsize=20)
   
@@ -924,7 +930,7 @@ $m_{\chi} = M_{med} ~/ 3$
 
 # ### NOT USED #### 
 # def cb_plot3x1(process, figure_name, sigmaz, omegarelic_mass, dmlist, gr,
-#                cmap = new_cmap, fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d')):
+#                cmap = 'twilight', fsize = 18, folder = '../figures', today = datetime.date.today().strftime('%Y-%m-%d')):
 
 
 #     for fignumber, dmname in enumerate(dmlist):

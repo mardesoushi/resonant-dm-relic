@@ -1,8 +1,8 @@
 import numpy as np
 import models.general_parameters as gp
 import models.sigma0_xsections as sig0
-import fortran_integral
-import fortran_quad
+#import fortran_integral
+#import fortran_quad
 # class vectorize(np.vectorize):
 #     def __get__(self, obj, objtype):
 #         return functools.partial(__call__, obj)

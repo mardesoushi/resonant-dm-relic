@@ -1,9 +1,9 @@
 import numpy as np
 #import scipy as sp
-import fortran_quad
+#import fortran_quad
 import models.cp_sigma0_xsections as cp_sig0
 from scipy.integrate import quad as spquad
-import cupy as cp
+#import cupy as cp
 
 ######################### RELIC DENSITY CALC ###############################3333
 

@@ -7,8 +7,8 @@ from numpy import sqrt as sqrt
 
 @np.vectorize
 def GMSM(s, mq, Mmed, mx, gr, gl, gx, Nf):
-    if Mmed < 2*mx:
-        return np.nan
+    #if Mmed < 2*mx:
+    #    return np.nan
     M = Mmed
     Gamma_SM = (np.sqrt(1 - 4*(mq**2)/(M**2)) * ((gl**2)*(M**2 - mq**2) + 6*gl*gr*(mq**2) + (gr**2)*((M**2) - (mq**2))))/(24*np.pi*M)  ## x9 for all SM fermions
     
@@ -16,8 +16,8 @@ def GMSM(s, mq, Mmed, mx, gr, gl, gx, Nf):
 
 @np.vectorize
 def GMS(s, mq, Mmed, mx, gr, gl, gx, Nf):
-    if Mmed < 2*mx:
-        return np.nan
+    #if Mmed < 2*mx:
+    #    return np.nan
     M = Mmed
     
     gxs = gx
@@ -27,8 +27,8 @@ def GMS(s, mq, Mmed, mx, gr, gl, gx, Nf):
 
 @np.vectorize
 def GMF(s, mq, Mmed, mx, gr, gl, gx, Nf):
-    if Mmed < 2*mx:
-        return np.nan
+    # if Mmed < 2*mx:
+    #     return np.nan
     M = Mmed
     grx = glx = gx
 
@@ -39,8 +39,8 @@ def GMF(s, mq, Mmed, mx, gr, gl, gx, Nf):
 
 @np.vectorize
 def GMV(s, me, Mmed, mx, gr, gl, gx, Nf):
-    if Mmed < 2*mx:
-        return np.nan
+    # if Mmed < 2*mx:
+    #     return np.nan
     
     m_f = mx 
     M_med = Mmed 
@@ -115,29 +115,26 @@ def sig0_S(s, mq, Mmed, mx, gr, gl, gx, Nf):    ## integrated total cross sectio
 # FERMION DARK MATTER
 # ------------------------------------------------------------------------------
 @np.vectorize
-def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nf):  ## integrated total cross section FERMION \sigma_0 (ee -> Z' -> XX)
+def sig0_F(s, mq, Mmed, mx, gr, gl, gx, Nf):  ## integrated total cross section for Fermion DM
 
     if s < 4*(mx**2): ##Define the correct physical domain for s channel 
         return np.nan  
     
     else:
         M = Mmed
-        
         #coupling control
         glx = gx
         grx = gx
         #----------------
-        
         dmname = 'Fermion'
         Bi = GM('SM').GMdecay(s, mq, Mmed, mx, gr, gl, gx, Nf)
         Bf = GM(dmname).GMdecay( s, mq, Mmed, mx, gr, gl, gx, Nf)
-        Gamma = Bi + Bf
 
-        
+        Gamma = Bi + Bf
         totalCS = np.sqrt(-4*mq**2 + s)*np.sqrt(-4*mx**2 + s)*(gl**2*(4*M**4*mq**2*mx**2*(glx**2 - 3*glx*grx + grx**2) - M**2*s*(M**2*mq**2*(glx**2 - 6*glx*grx + grx**2) + mx**2*(M**2*(glx**2 + grx**2) + 6*mq**2*(glx - grx)**2)) + s**2*(M**4*(glx**2 + grx**2) + 3*mq**2*mx**2*(glx - grx)**2)) + 6*gl*gr*mx**2*(-2*M**4*mq**2*(glx**2 - 4*glx*grx + grx**2) + M**4*s*(glx**2 + grx**2) + 2*M**2*mq**2*s*(glx - grx)**2 - mq**2*s**2*(glx - grx)**2) + gr**2*(4*M**4*mq**2*mx**2*(glx**2 - 3*glx*grx + grx**2) - M**2*s*(M**2*mq**2*(glx**2 - 6*glx*grx + grx**2) + mx**2*(M**2*(glx**2 + grx**2) + 6*mq**2*(glx - grx)**2)) + s**2*(M**4*(glx**2 + grx**2) + 3*mq**2*mx**2*(glx - grx)**2)))/(48*np.pi*M**4*s**2*(Gamma**2*M**2 + (M**2 - s)**2))
-        #Try this
-        #totalCS = np.sqrt((-4*mq**2 + s)*(-4*mx**2 + s))*(gl**2*(glx**2*(M**4*(mq**2*(4*mx**2 - s) + s*(-mx**2 + s)) - 6*M**2*mq**2*mx**2*s + 3*mq**2*mx**2*s**2) - 6*glx*grx*mq**2*(M**4*(2*mx**2 - s) - 2*M**2*mx**2*s + mx**2*s**2) + grx**2*(M**4*(mq**2*(4*mx**2 - s) + s*(-mx**2 + s)) - 6*M**2*mq**2*mx**2*s + 3*mq**2*mx**2*s**2)) - 6*gl*gr*mx**2*(glx**2*(M**4*(2*mq**2 - s) - 2*M**2*mq**2*s + mq**2*s**2) - 2*glx*grx*mq**2*(4*M**4 - 2*M**2*s + s**2) + grx**2*(M**4*(2*mq**2 - s) - 2*M**2*mq**2*s + mq**2*s**2)) + gr**2*(glx**2*(M**4*(mq**2*(4*mx**2 - s) + s*(-mx**2 + s)) - 6*M**2*mq**2*mx**2*s + 3*mq**2*mx**2*s**2) - 6*glx*grx*mq**2*(M**4*(2*mx**2 - s) - 2*M**2*mx**2*s + mx**2*s**2) + grx**2*(M**4*(mq**2*(4*mx**2 - s) + s*(-mx**2 + s)) - 6*M**2*mq**2*mx**2*s + 3*mq**2*mx**2*s**2)))/(96*np.pi*M**4*s**2*(M**4 + M**2*(Gamma**2 - 2*s) + s**2))
+    
     return totalCS
+
 
 
 @np.vectorize
